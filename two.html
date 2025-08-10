@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Online Examination System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f7f8fa;
+        }
+        html, body {
+            height: 100%;
+        }
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        header {
+            background: #2c3e50;
+            color: white;
+            padding: 15px;
+            text-align: center;
+        }
+        nav a {
+            color: white;
+            margin: 0 15px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s, background 0.3s, padding 0.3s;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        nav a:hover {
+            background: white;
+            color: #2c3e50;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            margin-top: 20px;
+            flex: 1;
+        }
+        h1, h2 {
+            text-align: center;
+        }
+        input, select, textarea, button {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            transition: border 0.3s, box-shadow 0.3s;
+        }
+        input:hover, select:hover, textarea:hover {
+            border: 1px solid #2c3e50;
+            box-shadow: 0 0 5px rgba(44, 62, 80, 0.5);
+        }
+        button {
+            background: #2c3e50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.2s;
+        }
+        button:hover {
+            background: #1a252f;
+            transform: scale(1.05);
+        }
+        footer {
+            text-align: center;
+            padding: 15px;
+            background: #2c3e50;
+            color: white;
+        }
+        section {
+            display: none;
+        }
+        section.active {
+            display: block;
+        }
+    </style>
+    <script>
+        function showPage(pageId) {
+            document.querySelectorAll("section").forEach(sec => sec.classList.remove("active"));
+            document.getElementById(pageId).classList.add("active");
+        }
+        window.onload = () => showPage("home");
+    </script>
+</head>
+<body>
+<header>
+    <h1>Online Examination System</h1>
+    <nav>
+        <a onclick="showPage('home')">Home</a>
+        <a onclick="showPage('studentLogin')">Student Login</a>
+        <a onclick="showPage('adminLogin')">Admin Login</a>
+        <a onclick="showPage('register')">Register</a>
+        <a onclick="showPage('test')">Take Test</a>
+        <a onclick="showPage('results')">Results</a>
+    </nav>
+</header>
+
+<!-- Home -->
+<section id="home" class="container">
+    <h2>Welcome to the Online Examination System</h2>
+    <p>This system allows students to take tests online, view results, and for admins to manage exams easily.
+       <br>Click on 'Take Test' to start or register for a new account.</p>
+</section>
+
+<!-- Student Login -->
+<section id="studentLogin" class="container">
+    <form>
+        <label>Username:</label>
+        <input type="text" placeholder="Enter Username" required>
+        <label>Password:</label>
+        <input type="password" placeholder="Enter Password" required>
+        <button type="submit">Login</button>
+    </form>
+</section>
+
+<!-- Admin Login -->
+<section id="adminLogin" class="container">
+    <form>
+        <label>Admin Username:</label>
+        <input type="text" placeholder="Enter Username" required>
+        <label>Password:</label>
+        <input type="password" placeholder="Enter Password" required>
+        <button type="submit">Login</button>
+    </form>
+</section>
+
+<!-- Register -->
+<section id="register" class="container">
+    <form>
+        <label>Full Name:</label>
+        <input type="text" placeholder="Enter Full Name" required>
+        <label>Email:</label>
+        <input type="email" placeholder="Enter Email" required>
+        <label>Username:</label>
+        <input type="text" placeholder="Choose Username" required>
+        <label>Password:</label>
+        <input type="password" placeholder="Enter Password" required>
+        <label>Confirm Password:</label>
+        <input type="password" placeholder="Confirm Password" required>
+        <button type="submit">Register</button>
+    </form>
+</section>
+
+<!-- Test Page -->
+<section id="test" class="container">
+    <h2>Sample Questions</h2>
+    <form onsubmit="showPage('results'); return false;">
+        <p><strong>1.</strong> What is a Data structure?</p>
+        <label><input type="radio" name="q1"> A programming language</label><br>
+        <label><input type="radio" name="q1"> A way to store and organize data</label><br>
+        <label><input type="radio" name="q1"> A collection of algorithms</label><br><br>
+
+        <p><strong>2.</strong> Which data structure is used for implementing recursion?</p>
+        <label><input type="radio" name="q2"> Stack</label><br>
+        <label><input type="radio" name="q2"> Queue</label><br>
+        <label><input type="radio" name="q2"> List</label><br><br>
+
+        <p><strong>3.</strong> Which data structure is based on LIFO principle?</p>
+        <label><input type="radio" name="q3"> Stack</label><br>
+        <label><input type="radio" name="q3"> Linked list</label><br>
+        <label><input type="radio" name="q3"> List</label><br><br>
+
+        <button type="submit">Submit Test</button>
+    </form>
+</section>
+
+<footer>
+    <b>2025 Online Examination System</b>
+</footer>
+</body>
+</html>
