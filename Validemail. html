@@ -1,0 +1,23 @@
+<!DOCTYPE html>  
+<html>  
+<head>  
+    <script>  
+        function validate(){  
+            let mail = document.getElementById("t1").value;  
+            let p = /\w+@\w+.\w/;  
+            if(p.test(mail)){  
+                alert("valid email");  
+            } else {  
+                alert("Invalid email");  
+            }  
+        }  
+    </script>  
+</head>  
+<body>  
+    <form>  
+        <label for="no">email:</label>  
+        <input type="email" id="t1" name="t1"><br><br>  
+        <input type="button" value="Validate" onclick="validate(event)">  
+    </form>  
+</body>  
+</html>
