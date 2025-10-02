@@ -1,0 +1,397 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Smart Study Planner — Single Page</title>
+  <style>
+    :root{
+      --bg: #89c8fc;        
+      --panel:white;     
+      --muted:black;     
+      --accent-a: #fb85b8;  
+      --accent-b: #c8e7ff;  
+      --accent-c: #aa6fbc;  
+      --accent-d: #66d0f6;  
+      --glass: rgba(117, 196, 249, 0.6);
+      --round: 12px;
+    }
+
+    *{
+        box-sizing:border-box;
+    }
+    html,body{
+        height:100%;
+        margin:0;
+        font-family:Inter,system-ui,Arial,sans-serif;
+        background:linear-gradient(180deg,var(--bg),#fffdf9);
+        color:var(--muted);
+    }
+
+    .wrap{
+        max-width:1100px;
+        margin:18px auto;
+        padding:18px;
+        display:grid;
+        grid-template-columns:1fr 380px;
+        gap:18px;
+    }
+    header{
+        grid-column:1/3;
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        margin-bottom:6px;
+    }
+
+    h1{
+        margin:0;
+        font-size:20px;
+    }
+    .sub{
+        font-size:13px;
+        color:var(--muted);
+    }
+    .card{
+        background:var(--panel);
+        border-radius:var(--round);
+        padding:14px;
+        box-shadow:0 6px 18px rgba(0,0,0,0.04);
+    }
+
+    form.add{
+        display:grid;
+        grid-template-columns:1fr 120px;
+        gap:10px;
+        align-items:start;
+    }
+    .fields{
+        display:grid;
+        gap:8px;
+    }
+    input[type=text], textarea, input[type=date], input[type=time], select{
+        width:100%;
+        padding:10px;
+        border-radius:10px;
+        border:1px solid rgba(0,0,0,0.04);
+        background:transparent;
+        color:var(--muted);
+    }
+    textarea{
+        resize:vertical;
+    }
+    .controls{
+        display:flex;
+        gap:8px;
+    }
+    button{
+        padding:9px 12px;
+        border-radius:10px;
+        border:0;
+        cursor:pointer;
+        font-weight:600;
+    }
+    .btn-primary{
+        background:linear-gradient(90deg,var(--accent-b),var(--accent-c));
+        color:#24323b;
+    }
+    .btn-soft{
+        background:transparent;
+        border:1px solid rgba(0,0,0,0.04);
+    }
+    .task-list{
+        display:grid;
+        gap:8px;
+        margin-top:12px;
+    }
+    .task{
+        display:flex;
+        gap:12px;
+        padding:10px;
+        border-radius:10px;
+        align-items:center;
+        justify-content:space-between;
+        background:linear-gradient(180deg,var(--glass),transparent);
+    }
+    .task .left{
+        display:flex;
+        gap:10px;
+        align-items:center;
+    }
+    .tag{
+        padding:6px 8px;
+        border-radius:999px;
+        font-size:12px;
+        background:linear-gradient(90deg,var(--accent-a),var(--accent-d));
+        color:#2c3434;
+    }
+    .meta{
+        font-size:12px;
+        color:var(--muted);
+    }
+    .task .actions{
+        display:flex;
+        gap:6px;
+    }
+    .action{
+        padding:6px 8px;
+        border-radius:8px;
+        border:0;
+        cursor:pointer;
+        background:transparent;
+    }
+    .side{
+        display:flex;
+        flex-direction:column;
+        gap:12px;
+    }
+    .mini{
+        display:flex;
+        gap:8px;
+        align-items:center;
+    }
+    .stat{
+        flex:1;
+        padding:12px;
+        border-radius:10px;
+        background:linear-gradient(90deg,var(--accent-b),var(--accent-a));
+        text-align:center;
+    }
+    .timer{
+        display:grid;
+        gap:8px;
+        align-items:center;
+    }
+    .bigtime{
+        font-size:28px;
+        font-weight:700;
+        color:#1b2a2f;
+    }
+    .timer-controls{
+        display:flex;
+        gap:8px;
+    }
+    .schedule{
+        display:grid;
+        gap:8px;
+    }
+    .day{
+        padding:8px;
+        border-radius:10px;
+        background:linear-gradient(90deg,var(--accent-c),#fff);
+    }
+    .editing{
+        outline:3px dashed rgba(66,153,225,0.14);
+    }
+    @media (max-width:980px){
+        .wrap{grid-template-columns:1fr;padding:12px}.side{order:2}
+    }
+
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div>
+        <h1>Smart Study Planner</h1>
+        <div class="sub">Colourful, scheduling, managing, updating & timer — minimal JS, maximal HTML/CSS</div>
+      </div>
+      <div style="text-align:right">
+        <div style="font-size:13px;color:var(--muted)">Local & offline • Pastel theme</div>
+      </div>
+    </header>
+    <main>
+      <section class="card">
+        <form id="taskForm" class="add" autocomplete="off">
+          <div class="fields">
+            <input id="title" type="text" placeholder="Task title — e.g. Read Chapter 5: Algebra" required />
+            <textarea id="notes" rows="3" placeholder="Notes or steps (optional)"></textarea>
+            <div style="display:flex;gap:8px">
+              <input id="date" type="date" />
+              <input id="time" type="time" />
+            </div>
+            <div style="display:flex;gap:8px">
+              <select id="priority">
+                <option value="low">Low priority</option>
+                <option value="med" selected>Medium priority</option>
+                <option value="high">High priority</option>
+              </select>
+              <input id="tag" type="text" placeholder="Tag (e.g. Math)" />
+            </div>
+          </div>
+
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <button id="saveBtn" class="btn-primary">Add Task</button>
+            <button type="button" id="clearBtn" class="btn-soft">Clear Form</button>
+            <div style="font-size:12px;color:var(--muted);text-align:center">Tip: Click a task's Edit to load into form for update.</div>
+          </div>
+        </form>
+
+        <div style="margin-top:12px;display:flex;gap:8px;align-items:center">
+          <input id="search" type="text" placeholder="Search tasks or tags..." style="flex:1;padding:8px;border-radius:8px;border:1px solid rgba(0,0,0,0.04)" />
+          <select id="filterDate" style="padding:8px;border-radius:8px;border:1px solid rgba(0,0,0,0.04)">
+            <option value="all">All</option>
+            <option value="today">Today</option>
+            <option value="week">This week</option>
+          </select>
+        </div>
+
+        <div class="task-list" id="taskList" aria-live="polite"></div>
+      </section>
+
+      <section style="margin-top:12px" class="card">
+        <h3 style="margin:0 0 8px 0">Schedule (next 7 days)</h3>
+        <div class="schedule" id="schedule"></div>
+      </section>
+    </main>
+
+    
+    <aside class="side">
+      <div class="card" style="text-align:center">
+        <div class="mini">
+          <div class="stat">Total<br><strong id="total">0</strong></div>
+          <div class="stat">Done<br><strong id="done">0</strong></div>
+        </div>
+      </div>
+
+      <div class="card timer">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <strong>Focus Timer</strong>
+          <small style="font-size:12px;color:var(--muted)">Pomodoro</small>
+        </div>
+        <div class="bigtime" id="timeDisplay">25:00</div>
+        <div style="display:flex;gap:8px" class="timer-controls">
+          <button id="start" class="btn-primary">Start</button>
+          <button id="pause" class="btn-soft">Pause</button>
+          <button id="reset" class="btn-soft">Reset</button>
+        </div>
+        <div style="margin-top:8px;font-size:12px;color:var(--muted)">Set length (minutes): <input id="focusLen" type="number" value="25" style="width:60px;padding:6px;border-radius:6px;border:1px solid rgba(0,0,0,0.04)" /></div>
+      </div>
+
+      <div class="card">
+        <h4 style="margin:0 0 8px 0">Quick actions</h4>
+        <div style="display:flex;gap:8px">
+          <button id="export" class="btn-primary">Export</button>
+          <button id="import" class="btn-soft">Import</button>
+        </div>
+        <input id="file" type="file" accept="application/json" style="display:none;margin-top:8px" />
+      </div>
+
+    </aside>
+  </div>
+
+  <script>
+    
+    const LS = 'ssp:v2';
+    let state = { tasks: [] };
+    let editingId = null;
+
+    const form = document.getElementById('taskForm');
+    const titleEl = document.getElementById('title');
+    const notesEl = document.getElementById('notes');
+    const dateEl = document.getElementById('date');
+    const timeEl = document.getElementById('time');
+    const priorityEl = document.getElementById('priority');
+    const tagEl = document.getElementById('tag');
+    const taskList = document.getElementById('taskList');
+    const schedule = document.getElementById('schedule');
+    const totalEl = document.getElementById('total');
+    const doneEl = document.getElementById('done');
+    const searchEl = document.getElementById('search');
+    const filterDate = document.getElementById('filterDate');
+
+    const timeDisplay = document.getElementById('timeDisplay');
+    const startBtn = document.getElementById('start');
+    const pauseBtn = document.getElementById('pause');
+    const resetBtn = document.getElementById('reset');
+    const focusLen = document.getElementById('focusLen');
+
+    function load(){ const raw = localStorage.getItem(LS); if(raw) state = JSON.parse(raw); render(); }
+    function save(){ localStorage.setItem(LS, JSON.stringify(state)); }
+
+    function uid(){ return Math.random().toString(36).slice(2,9); }
+
+    function render(){ taskList.innerHTML='';
+      const q = searchEl.value.trim().toLowerCase();
+      const filter = filterDate.value;
+      const now = new Date();
+      state.tasks.forEach(t=>{
+       
+        if(q){ const hay = (t.title+' '+(t.tag||'')+' '+(t.notes||'')).toLowerCase(); if(!hay.includes(q)) return; }
+        if(filter==='today'){ if(!t.date) return; const d = new Date(t.date); if(d.toDateString() !== (new Date()).toDateString()) return; }
+        if(filter==='week'){ if(!t.date) return; const d = new Date(t.date); const diff = (d - now)/(1000*60*60*24); if(diff<0 || diff>7) return; }
+
+        const el = document.createElement('div'); el.className='task';
+        const left = document.createElement('div'); left.className='left';
+        const tag = document.createElement('div'); tag.className='tag'; tag.textContent = t.tag || 'Task';
+        const body = document.createElement('div');
+        body.innerHTML = <div style="font-weight:700">${escape(t.title)}</div><div class="meta">${t.date? (new Date(t.date)).toLocaleString() : 'No schedule'} • ${t.priority}</div><div style="font-size:13px;color:var(--muted);margin-top:6px">${escape(t.notes||'')}</div>;
+        left.appendChild(tag); left.appendChild(body);
+        const actions = document.createElement('div'); actions.className='actions';
+        const doneBtn = document.createElement('button'); doneBtn.className='action'; doneBtn.textContent = t.done? 'Undone' : 'Done';
+        doneBtn.onclick = ()=>{ t.done = !t.done; save(); render(); };
+        const editBtn = document.createElement('button'); editBtn.className='action'; editBtn.textContent='Edit'; editBtn.onclick = ()=>loadForEdit(t.id);
+        const delBtn = document.createElement('button'); delBtn.className='action'; delBtn.textContent='Delete'; delBtn.onclick = ()=>{ if(confirm('Delete this task?')){ state.tasks = state.tasks.filter(x=>x.id!==t.id); save(); render(); } };
+        actions.appendChild(doneBtn); actions.appendChild(editBtn); actions.appendChild(delBtn);
+        el.appendChild(left); el.appendChild(actions);
+        taskList.appendChild(el);
+      });
+
+    
+      totalEl.textContent = state.tasks.length; doneEl.textContent = state.tasks.filter(t=>t.done).length;
+
+      
+      schedule.innerHTML='';
+      const days = [];
+      for(let i=0;i<7;i++){ const d = new Date(); d.setDate(d.getDate()+i); days.push(d); }
+      days.forEach(d=>{
+        const block = document.createElement('div'); block.className='day';
+        const label = document.createElement('div'); label.innerHTML = <strong>${d.toLocaleDateString(undefined,{weekday:'short',month:'short',day:'numeric'})}</strong>;
+        block.appendChild(label);
+        const items = state.tasks.filter(t=> t.date && (new Date(t.date)).toDateString() === d.toDateString());
+        if(items.length===0){ const em = document.createElement('div'); em.style.fontSize='13px'; em.style.color='var(--muted)'; em.textContent='—'; block.appendChild(em);} else {
+          items.forEach(it=>{ const itEl = document.createElement('div'); itEl.style.marginTop='6px'; itEl.innerHTML = <span style="font-weight:700">${escape(it.title)}</span> <div style="font-size:12px;color:var(--muted)">${it.time?escape(it.time):''} • ${escape(it.tag||'')}</div>; block.appendChild(itEl); })
+        }
+        schedule.appendChild(block);
+      });
+    }
+
+    form.addEventListener('submit', e=>{ e.preventDefault(); const payload = { title: titleEl.value.trim(), notes: notesEl.value.trim(), date: dateEl.value? combineDateTime(dateEl.value, timeEl.value): null, time: timeEl.value || null, priority: priorityEl.value, tag: tagEl.value.trim(), done:false };
+      if(!payload.title) return alert('Add a title');
+      if(editingId){ // update
+        const idx = state.tasks.findIndex(t=>t.id===editingId); if(idx>-1){ state.tasks[idx] = { ...state.tasks[idx], ...payload }; editingId = null; document.getElementById('saveBtn').textContent='Add Task'; }
+      } else { state.tasks.push({ id: uid(), ...payload }); }
+      form.reset(); save(); render(); });
+
+    document.getElementById('clearBtn').onclick = ()=>{ form.reset(); editingId=null; document.getElementById('saveBtn').textContent='Add Task'; }
+
+    function loadForEdit(id){ const t = state.tasks.find(x=>x.id===id); if(!t) return; titleEl.value = t.title; notesEl.value = t.notes||''; if(t.date){ const dt = new Date(t.date); dateEl.value = dt.toISOString().slice(0,10); timeEl.value = t.time || dt.toTimeString().slice(0,5); } else { dateEl.value=''; timeEl.value=''; } priorityEl.value = t.priority; tagEl.value = t.tag||''; editingId = t.id; document.getElementById('saveBtn').textContent='Update Task'; }
+
+    function combineDateTime(d,t){ if(!d) return null; if(t) return new Date(d+'T'+t).toISOString(); return new Date(d).toISOString(); }
+
+   
+    function escape(s){ return String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;'); }
+
+   
+    searchEl.addEventListener('input', ()=>render()); filterDate.addEventListener('change', ()=>render());
+
+   
+    document.getElementById('export').onclick = ()=>{ const a = document.createElement('a'); const blob = new Blob([JSON.stringify(state, null, 2)], {type:'application/json'}); a.href = URL.createObjectURL(blob); a.download = 'ssp-export.json'; a.click(); }
+    document.getElementById('import').onclick = ()=> document.getElementById('file').click();
+    document.getElementById('file').addEventListener('change', e=>{ const f = e.target.files[0]; if(!f) return; const r = new FileReader(); r.onload = ()=>{ try{ const data = JSON.parse(r.result); if(data.tasks) { state = data; save(); render(); alert('Imported'); } else alert('Invalid file'); } catch(err){ alert('Invalid JSON'); } }; r.readAsText(f); });
+
+  
+    let timerId = null; let remaining = 0; let running = false;
+    function updateDisplay(){ const mm = String(Math.floor(remaining/60)).padStart(2,'0'); const ss = String(remaining%60).padStart(2,'0'); timeDisplay.textContent = ${mm}:${ss}; }
+    function startTimer(){ if(running) return; const mins = Math.max(1, parseInt(focusLen.value)||25); if(remaining===0) remaining = mins*60; running = true; timerId = setInterval(()=>{ remaining--; updateDisplay(); if(remaining<=0){ clearInterval(timerId); timerId=null; running=false; alert('Focus session finished'); } }, 1000); }
+    function pauseTimer(){ if(timerId) clearInterval(timerId); timerId=null; running=false; }
+    function resetTimer(){ pauseTimer(); remaining = Math.max(1, parseInt(focusLen.value)||25)*60; updateDisplay(); }
+    startBtn.addEventListener('click', ()=>startTimer()); pauseBtn.addEventListener('click', ()=>pauseTimer()); resetBtn.addEventListener('click', ()=>resetTimer()); // init display
+
+   
+    (function(){ load(); 
+      remaining = parseInt(focusLen.value||25)*60; updateDisplay(); })();
+
+  </script>
+</body>
+</html>
